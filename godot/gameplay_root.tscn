@@ -1,0 +1,12 @@
+[gd_scene format=2]
+
+[node name="gameplay_root" type="Node2D"]
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="gameplay_parent" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 1280, 720 )
+
+[node name="hud_parent" type="Node2D" parent="."]
