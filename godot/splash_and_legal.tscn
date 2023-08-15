@@ -1,3 +1,131 @@
-[gd_scene format=2]
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://splash/MATL_splash_transition.tres" type="Material" id=1]
+[ext_resource path="res://misc/wipe.png" type="Texture" id=2]
+[ext_resource path="res://splash/logotype_1280.png" type="Texture" id=3]
+[ext_resource path="res://splash/godot_1280.png" type="Texture" id=4]
+[ext_resource path="res://splash/splash.wav" type="AudioStream" id=5]
+
+[sub_resource type="VisualShaderNodeScalarOp" id=1]
+operator = 3
+
+[sub_resource type="VisualShaderNodeVectorCompose" id=2]
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=3]
+
+[sub_resource type="VisualShaderNodeVectorScalarMix" id=4]
+
+[sub_resource type="VisualShaderNodeTexture" id=5]
+texture = ExtResource( 3 )
+
+[sub_resource type="VisualShaderNodeTexture" id=6]
+texture = ExtResource( 4 )
+
+[sub_resource type="VisualShaderNodeTexture" id=7]
+texture = ExtResource( 2 )
+
+[sub_resource type="VisualShaderNodeInput" id=8]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=9]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 3, 1 ) ]
+operator = 3
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=10]
+
+[sub_resource type="VisualShaderNodeScalarOp" id=11]
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=12]
+uniform_name = "wipe_offset"
+hint = 1
+max = 0.667
+
+[sub_resource type="VisualShader" id=13]
+code = "shader_type canvas_item;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Output:0
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -3047.6, 963.213 )
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2( 880, 160 )
+nodes/fragment/2/node = SubResource( 5 )
+nodes/fragment/2/position = Vector2( -200, -60 )
+nodes/fragment/3/node = SubResource( 6 )
+nodes/fragment/3/position = Vector2( -200, 220 )
+nodes/fragment/4/node = SubResource( 7 )
+nodes/fragment/4/position = Vector2( -200, 480 )
+nodes/fragment/5/node = SubResource( 8 )
+nodes/fragment/5/position = Vector2( -1240, 260 )
+nodes/fragment/6/node = SubResource( 9 )
+nodes/fragment/6/position = Vector2( -1140, 540 )
+nodes/fragment/7/node = SubResource( 10 )
+nodes/fragment/7/position = Vector2( -960, 540 )
+nodes/fragment/8/node = SubResource( 11 )
+nodes/fragment/8/position = Vector2( -640, 520 )
+nodes/fragment/9/node = SubResource( 12 )
+nodes/fragment/9/position = Vector2( -1080, 700 )
+nodes/fragment/10/node = SubResource( 1 )
+nodes/fragment/10/position = Vector2( -600, 700 )
+nodes/fragment/11/node = SubResource( 2 )
+nodes/fragment/11/position = Vector2( -380, 520 )
+nodes/fragment/12/node = SubResource( 3 )
+nodes/fragment/12/position = Vector2( 32.4107, 618.06 )
+nodes/fragment/13/node = SubResource( 4 )
+nodes/fragment/13/position = Vector2( 163.121, 153.661 )
+nodes/fragment/connections = PoolIntArray( 5, 0, 2, 0, 5, 0, 3, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 1, 8, 0, 9, 0, 10, 0, 10, 0, 8, 1, 8, 0, 11, 1, 7, 0, 11, 0, 7, 2, 11, 2, 11, 0, 4, 0, 4, 0, 12, 0, 2, 0, 13, 0, 12, 0, 13, 2, 3, 0, 13, 1 )
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = SubResource( 13 )
+
+[sub_resource type="GDScript" id=15]
+script/source = "extends Node2D
+
+var anim_clock : int;
+
+#--------------------------------------------------------------
+
+func _ready():
+    GLOBAL.load_options_data();
+    $AudioStreamPlayer.volume_db = GLOBAL.get_sfx_vol_in_db();
+    anim_clock = -150;
+    $AudioStreamPlayer.play();
+    set_process(true);
+
+#--------------------------------------------------------------
+
+func _process(_ignored):
+    anim_clock += 1;
+    $splash.material.set_shader_param(\"wipe_offset\", anim_clock/240.0);
+    
+    if (anim_clock > 300):
+        get_tree().change_scene(\"res://gameplay_root.tscn\");
+        
+"
 
 [node name="splash_and_legal" type="Node2D"]
+material = SubResource( 14 )
+script = SubResource( 15 )
+
+[node name="splash" type="Sprite" parent="."]
+material = ExtResource( 1 )
+position = Vector2( 640, 360 )
+texture = ExtResource( 4 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
