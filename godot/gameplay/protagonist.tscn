@@ -1,0 +1,82 @@
+[gd_scene load_steps=4 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends KinematicBody
+
+#-------------------------------------------------------------------------------
+
+export var INVINCIBILITY_LENGTH : int;
+export var AGILITY_LENGTH       : int;
+
+export var BASE_RUN_SPEED       : float;
+export var TIME_BETWEEN_SHOTS   : int;
+
+var velocity            : Vector3 = Vector3.ZERO;
+var run_angle           : float;
+var shot_angle          : float;
+var invincibility_timer : int;
+var shot_timer          : int;
+
+var max_hp              : int;
+var current_hp          : int;
+
+#-------------------------------------------------------------------------------
+
+func entered_new_room(spawn_coords : Vector3, direction : int):
+    self.translation = spawn_coords;
+    self.rotation_degrees.y = direction * 90.0;
+    return;
+
+#-------------------------------------------------------------------------------
+
+func _ready():
+    pass # Replace with function body.
+
+#-------------------------------------------------------------------------------
+
+func _process(_ignore):
+    move_and_collide(velocity);
+    pass
+
+#-------------------------------------------------------------------------------
+
+func _on_coll_bullet_hit_area_entered(area):
+    print('should take damage');
+    return;
+    
+#-------------------------------------------------------------------------------
+
+func _on_coll_bullet_graze_area_entered(area):
+    print('should count as graze');
+    return;
+"
+
+[sub_resource type="CylinderShape" id=2]
+height = 1.0
+radius = 0.5
+
+[sub_resource type="CylinderShape" id=3]
+height = 1.0
+radius = 0.1
+
+[node name="KinematicBody" type="KinematicBody"]
+script = SubResource( 1 )
+
+[node name="coll_wall" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
+shape = SubResource( 2 )
+
+[node name="coll_bullet_hit" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="coll_bullet_hit"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
+shape = SubResource( 3 )
+
+[node name="coll_bullet_graze" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="coll_bullet_graze"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
+shape = SubResource( 2 )
+
+[connection signal="area_entered" from="coll_bullet_hit" to="." method="_on_coll_bullet_hit_area_entered"]
+[connection signal="area_entered" from="coll_bullet_graze" to="." method="_on_coll_bullet_graze_area_entered"]
