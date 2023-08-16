@@ -29,6 +29,7 @@ Made wtih Godot 3.6.
 ## Notes
 - Freya thinks of Bastet as a little sister that has to be protected.  Bastet loves her, but is also mildly annoyed by always being told what to do by her.
 - Bastet is really proud of herself for having learnt to read and write Coptic in university, and is mildly surprised that it's not more widespread in the modern human world.
+- Bastet frequently uses the wrong word (where it would be funny - malapropisms, false friends, homophones, etc.)
 - Bastet mentions that she once got in trouble for getting caught ditching middle school and smoking catnip.
 - If Bastet weren't immortal, she'd be about 20 by appearance and maturity level.  The player is depicted as being about the same age.
 
@@ -36,6 +37,6 @@ Made wtih Godot 3.6.
 - Ankh - grants one extra life. takes effect instantly.
 - Chocolate milk - gives back one health point, or causes a gold coin to appear if the player is already at full health. takes effect instantly.
 - Bottle of cola - gives temporary invincibility and increased movement speed. takes effect instantly.
-- green salad - gives either increased shot damage, reflect shot, or spread shot for ten seconds, takes effect when touched.
-- healing oaiss - restores all health points when touched, but runs out of magic after a while. takes effect instantly.
+- can of tuna - gives either increased shot damage, reflect shot, or spread shot for ten seconds, takes effect when touched.
+- healing oasis - restores all health points when touched, but runs out of magic after a while. takes effect instantly.
 - gold coin - increments a counter when touched, can be used in the hub to buy permanent stat boosts.
