@@ -34,7 +34,7 @@ Made wtih Godot 3.6.
 
 ## Powerups
 - Ankh - grants one extra life. takes effect instantly.
-- Chocolate milk - gives back one health point, or caused a gold coin to appear. takes effect instantly.
+- Chocolate milk - gives back one health point, or causes a gold coin to appear if the player is already at full health. takes effect instantly.
 - Bottle of cola - gives temporary invincibility and increased movement speed. takes effect instantly.
 - green salad - gives either increased shot damage, reflect shot, or spread shot for ten seconds, takes effect when touched.
 - healing oaiss - restores all health points when touched, but runs out of magic after a while. takes effect instantly.
