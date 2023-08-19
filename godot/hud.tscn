@@ -1,0 +1,23 @@
+[gd_scene format=2]
+
+[node name="hud" type="Node2D"]
+
+[node name="lbl_curr_hp" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="lbl_max_hp" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="lbl_curr_weap" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="lbl_curr_powerup" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="lbl_curr_powerup_time_remaining" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
