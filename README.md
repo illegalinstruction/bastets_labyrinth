@@ -40,3 +40,6 @@ Made wtih Godot 3.6.
 - can of tuna - gives either increased shot damage, reflect shot, or spread shot for ten seconds, takes effect when touched.
 - healing oasis - restores all health points when touched, but runs out of magic after a while. takes effect instantly.
 - gold coin - increments a counter when touched, can be used in the hub to buy permanent stat boosts.
+
+## See also
+- [THis thread](https://shmups.system11.org/viewtopic.php?t=44816)
