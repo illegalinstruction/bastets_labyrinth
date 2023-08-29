@@ -210,7 +210,7 @@ func poll_joystick():
         _left_stick_y = left_tmp.y;
         
         _left_stick_distance = left_tmp.length();
-        _left_stick_angle = left_tmp.angle();
+        _left_stick_angle = (PI/2.0) - left_tmp.angle();
         
         # not used in this game
         #_right_stick_x = Input.get_joy_axis(0,JOY_ANALOG_RX);
