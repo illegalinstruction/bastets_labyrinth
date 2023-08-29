@@ -127,6 +127,8 @@ var _left_stick_x			: float;
 var _left_stick_y			: float;
 var _right_stick_x 			: float;
 var _right_stick_y 			: float;
+var _right_stick_angle 		: float;
+var _right_stick_distance 	: float;
 
 var _menu_up : int = BUTTON_STATE.IDLE;
 var _menu_down : int = BUTTON_STATE.IDLE;
@@ -212,9 +214,13 @@ func poll_joystick():
         _left_stick_distance = left_tmp.length();
         _left_stick_angle = (PI/2.0) - left_tmp.angle();
         
-        # not used in this game
-        #_right_stick_x = Input.get_joy_axis(0,JOY_ANALOG_RX);
-        #_right_stick_y = Input.get_joy_axis(0,JOY_ANALOG_RY);
+        var right_tmp : Vector2 = Vector2(Input.get_joy_axis(0,JOY_ANALOG_RX), Input.get_joy_axis(0,JOY_ANALOG_RY));
+        
+        _right_stick_x = Input.get_joy_axis(0,JOY_ANALOG_RX);
+        _right_stick_y = Input.get_joy_axis(0,JOY_ANALOG_RY);
+
+        _right_stick_distance = right_tmp.length();
+        _right_stick_angle = (PI/2.0) - right_tmp.angle();
 
     
         #--- BUTTONS ----------------------------------

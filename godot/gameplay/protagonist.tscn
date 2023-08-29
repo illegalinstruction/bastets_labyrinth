@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://gameplay/protagonist/catgirl.glb" type="PackedScene" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends KinematicBody
@@ -20,6 +22,7 @@ var shot_timer          : int;
 var max_hp              : int;
 var current_hp          : int;
 
+var bullet_1 = preload(\"res://gameplay/protagonist/protagonist_bullet.tscn\");
 #-------------------------------------------------------------------------------
 
 func entered_new_room(spawn_coords : Vector3, direction : int):
@@ -35,6 +38,41 @@ func _ready():
 #-------------------------------------------------------------------------------
 
 func _process(_ignore):
+    # movement
+    if (GLOBAL._left_stick_distance > 0.4):
+        self.rotation.y = (GLOBAL._left_stick_angle);
+        if (GLOBAL._left_stick_distance > 0.7):
+            $chara_model/AnimationPlayer.play(\"run\");
+            velocity.x = sin(self.rotation.y) / 7.0;
+            velocity.z = cos(self.rotation.y) / 7.0;
+        else:
+            $chara_model/AnimationPlayer.play(\"walk\");
+            velocity.x = sin(self.rotation.y) / 12.0;
+            velocity.z = cos(self.rotation.y) / 12.0;
+    else:
+        $chara_model/AnimationPlayer.play(\"idle\");
+        velocity *= 0.5;
+        
+    if (velocity.x > 0.4):
+        velocity.x = 0.4;
+    if (velocity.x < -0.4):
+        velocity.x = -0.4;
+
+    if (velocity.z > 0.4):
+        velocity.z = 0.4;
+    if (velocity.z < -0.4):
+        velocity.z = -0.4;
+        
+    # shooting
+    if (GLOBAL._right_stick_distance > 0.4):
+        if (shot_timer < 1):
+            var tmp_bullet = bullet_1.instance();
+            tmp_bullet.fire(self.translation, GLOBAL._right_stick_angle);
+            get_parent().add_child(tmp_bullet);
+            shot_timer = 10;
+        shot_timer -= 1;
+    else:
+        shot_timer = 0;
     move_and_collide(velocity);
     pass
 
@@ -59,7 +97,7 @@ radius = 0.5
 height = 1.0
 radius = 0.1
 
-[node name="KinematicBody" type="KinematicBody"]
+[node name="protagonist" type="KinematicBody"]
 script = SubResource( 1 )
 
 [node name="coll_wall" type="CollisionShape" parent="."]
@@ -77,6 +115,8 @@ shape = SubResource( 3 )
 [node name="CollisionShape" type="CollisionShape" parent="coll_bullet_graze"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
 shape = SubResource( 2 )
+
+[node name="chara_model" parent="." instance=ExtResource( 1 )]
 
 [connection signal="area_entered" from="coll_bullet_hit" to="." method="_on_coll_bullet_hit_area_entered"]
 [connection signal="area_entered" from="coll_bullet_graze" to="." method="_on_coll_bullet_graze_area_entered"]

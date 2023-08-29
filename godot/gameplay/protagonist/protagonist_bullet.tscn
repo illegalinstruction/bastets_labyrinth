@@ -1,0 +1,74 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://gameplay/protagonist/Material.material" type="Material" id=1]
+[ext_resource path="res://gameplay/protagonist/bullet_01.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends KinematicBody
+
+const SPEED : float = 0.245;
+var time_to_live: int;
+var velocity : Vector3;
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+    pass # Replace with function body.
+
+func fire(pos, angle):
+    time_to_live = 90;
+    self.translation = pos;
+    self.rotation.y = angle;
+    velocity.x =  sin(angle) * SPEED;
+    velocity.z =  cos(angle) * SPEED;
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_ignore):
+    time_to_live -= 1;
+    if (time_to_live < 1):
+        queue_free();
+    var coll = move_and_collide(velocity);
+    if not (coll == null):
+        queue_free();
+    return;
+"
+
+[sub_resource type="ArrayMesh" id=1]
+resource_name = "protagonist_bullet_Cube"
+surfaces/0 = {
+"aabb": AABB( -0.100763, -0.100763, -0.285, 0.201525, 0.201535, 0.57 ),
+"array_data": PoolByteArray( 172, 92, 206, 189, 172, 92, 206, 61, 132, 235, 145, 190, 63, 63, 126, 1, 0, 60, 0, 0, 172, 92, 206, 189, 172, 92, 206, 61, 132, 235, 145, 62, 63, 63, 127, 127, 0, 0, 0, 0, 176, 92, 206, 61, 176, 92, 206, 189, 132, 235, 145, 190, 63, 63, 126, 1, 0, 60, 0, 60, 172, 92, 206, 61, 172, 92, 206, 189, 132, 235, 145, 62, 63, 63, 127, 1, 0, 0, 0, 60, 180, 92, 206, 61, 172, 92, 206, 61, 130, 235, 145, 62, 193, 63, 0, 63, 0, 60, 0, 0, 168, 92, 206, 61, 172, 92, 206, 61, 132, 235, 145, 190, 193, 63, 0, 63, 0, 0, 0, 0, 168, 92, 206, 189, 176, 92, 206, 189, 132, 235, 145, 62, 193, 63, 0, 63, 0, 60, 0, 60, 176, 92, 206, 189, 172, 92, 206, 189, 130, 235, 145, 190, 193, 63, 0, 63, 0, 0, 0, 60 ),
+"array_index_data": PoolByteArray( 3, 0, 0, 0, 2, 0, 3, 0, 1, 0, 0, 0, 7, 0, 4, 0, 6, 0, 7, 0, 5, 0, 4, 0 ),
+"blend_shape_data": [  ],
+"format": 2194711,
+"index_count": 12,
+"material": ExtResource( 1 ),
+"primitive": 4,
+"skeleton_aabb": [  ],
+"vertex_count": 8
+}
+
+[sub_resource type="SpatialMaterial" id=3]
+params_blend_mode = 1
+albedo_texture = ExtResource( 2 )
+
+[sub_resource type="SphereShape" id=4]
+
+[node name="protagonist_bullet" type="KinematicBody"]
+collision_layer = 2
+collision_mask = 2
+axis_lock_motion_y = true
+move_lock_y = true
+script = SubResource( 2 )
+
+[node name="Cube" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.402287, 0 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 0.3, 0, 0, 0, 0.366, 0, 0, 0, 0.3, 0, 0.395, 0 )
+shape = SubResource( 4 )
