@@ -1,3 +1,105 @@
-[gd_scene format=2]
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://font/HannariMincho-Regular.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://main_menu/header.png" type="Texture" id=2]
+[ext_resource path="res://main_menu/cursor.png" type="Texture" id=3]
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Node2D
+
+var fade_in_clock : int = 32;
+
+var cursor_index : int = 0;
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+    set_process(true);
+    fade_in_clock = 32;
+    pass # Replace with function body.
+
+#----------------------------------------------
+
+func _process(delta):
+    if (fade_in_clock > 0):
+        fade_in_clock -= 1;
+        $fade_helper.color.a8 = (fade_in_clock * 8);
+        
+        if (fade_in_clock == 0):
+            $fade_helper.hide();
+        
+    
+    return;
+"
+
+[sub_resource type="CanvasItemMaterial" id=1]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Sprite
+
+var r : float;
+var g : float;
+var b : float;
+
+var anim_clock : int;
+
+func _ready():
+    set_process(true);
+    return;
+
+#------------------------------------------------------
+
+func _process(_ignore):
+    anim_clock += 1;
+    r = sin(anim_clock / 34.83) / 3.0;
+    g = sin(anim_clock / 49.10) / 3.0;
+    b = sin(anim_clock / 21.04) / 3.0;
+    modulate = Color(0.667 + r, 0.667 + g, 0.667 + b);
+"
+
+[sub_resource type="DynamicFont" id=3]
+resource_local_to_scene = true
+size = 36
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
+font_data = ExtResource( 1 )
 
 [node name="mainmenu_root" type="Node2D"]
+script = SubResource( 4 )
+
+[node name="header" type="Sprite" parent="."]
+position = Vector2( 640, 180 )
+texture = ExtResource( 2 )
+
+[node name="cursor" type="Sprite" parent="."]
+material = SubResource( 1 )
+position = Vector2( 640, 350 )
+scale = Vector2( 20.3125, 3 )
+texture = ExtResource( 3 )
+script = SubResource( 2 )
+
+[node name="menu_text" type="RichTextLabel" parent="."]
+margin_top = 321.0
+margin_right = 1280.0
+margin_bottom = 561.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/normal_font = SubResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[center]New Game
+Load Game
+Options
+Credits
+Quit[/center]"
+text = "New Game
+Load Game
+Options
+Credits
+Quit"
+
+[node name="fade_helper" type="ColorRect" parent="."]
+margin_right = 1280.0
+margin_bottom = 720.0
+color = Color( 0, 0, 0, 1 )

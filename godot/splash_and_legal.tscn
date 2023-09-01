@@ -114,7 +114,7 @@ func _process(_ignored):
     $splash.material.set_shader_param(\"wipe_offset\", anim_clock/240.0);
     
     if (anim_clock > 300):
-        get_tree().change_scene(\"res://gameplay_root.tscn\");
+        get_tree().change_scene(\"res://main_menu.tscn\");
         
 "
 
