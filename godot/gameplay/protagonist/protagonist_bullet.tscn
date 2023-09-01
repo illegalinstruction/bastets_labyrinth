@@ -6,6 +6,7 @@
 [sub_resource type="GDScript" id=2]
 script/source = "extends KinematicBody
 
+const PROTAG_BULLET = true;
 const SPEED : float = 0.245;
 var time_to_live: int;
 var velocity : Vector3;

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://gameplay/protagonist.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gameplay/test_room/test_room.tscn" type="PackedScene" id=2]
+[ext_resource path="res://gameplay/test_enemy.tscn" type="PackedScene" id=3]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Spatial
@@ -54,3 +55,6 @@ transform = Transform( 1, 0, 0, 0, 0.582038, 0.813162, 0, -0.813162, 0.582038, 0
 [node name="test_room" parent="ViewportContainer/gameplay_parent" instance=ExtResource( 2 )]
 
 [node name="hud_parent" type="Node2D" parent="."]
+
+[node name="KinematicBody" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.33214, 0, 1.79739 )
