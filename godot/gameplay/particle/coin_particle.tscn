@@ -1,0 +1,92 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://gameplay/particle/coin_particle.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "#------------------------------------------------------------------------------------
+#       .                                                   *
+#  _               _       _   _  *                   .                     
+# | |__   __ _ ___| |_ ___| |_( )___                                 ,:.            +
+# | '_ \\ / _` / __| __/ _ \\ __|// __|        *                       ,xo.               
+# | |_) | (_| \\__ \\ ||  __/ |_  \\__ \\                                ,kKc      
+# |_.__/ \\__,_|___/\\__\\___|\\__| |___/     .                         .c0Wo      
+#  _       _                _       _   _          +              .;xXNc      
+# | | __ _| |__  _   _ _ __(_)_ __ | |_| |__                     .:dKNx.     * 
+# | |/ _` | '_ \\| | | | '__| | '_ \\| __| '_ \\                  .;dOKNO'       
+# | | (_| | |_) | |_| | |  | | | | | |_| | | |             ..,lx0XNOc.        
+# |_|\\__,_|_.__/ \\__, |_|  |_|_| |_|\\__|_| |_|        .';coxOKKX0xc.                . 
+#                |___/                                  .':ccc;..      .               
+#                     .            =^..^=               
+#
+#    This file is part of the game Bastet's Labyrinth.
+#
+#    Bastet's Labyrinth is free software: you can redistribute it and/or modify 
+#    it under the terms of the GNU General Public License as published by the 
+#    Free Software Foundation, either version 3 of the License, or (at your 
+#    option) any later version.
+#
+#    Bastet's Labyrinth is distributed in the hope that it will be useful, but 
+#    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+#    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+#    more details.
+#
+#    You should have received a copy of the GNU General Public License along 
+#    with Bastet's Labyrinth. If not, see <https://www.gnu.org/licenses/>. 
+#
+extends Spatial
+
+#--- CONSTANTS -----------------------------------------------------------------
+const MIN_ATTENUATION       : float = 0.005;
+const MAX_ATTENUATION       : float = 0.012;
+const GRAVITY_ACCEL         : float = 0.00065;
+const MAX_SPEED_PER_AXIS    : float = 0.035;
+
+#--- ANIM VARS -----------------------------------------------------------------
+var velocity : Vector3;
+var intensity : float = 1.0;
+var attenuation : float = 0.0;
+
+#-------------------------------------------------------------------------------
+func _ready():
+    velocity.x = rand_range(-MAX_SPEED_PER_AXIS,    MAX_SPEED_PER_AXIS);
+    velocity.y = rand_range(0.0,                    MAX_SPEED_PER_AXIS * 1.6);
+    velocity.z = rand_range(-MAX_SPEED_PER_AXIS,    MAX_SPEED_PER_AXIS);
+    attenuation = rand_range(MIN_ATTENUATION, MAX_ATTENUATION);
+    $MeshInstance.set_surface_material(0,$MeshInstance.get_active_material(0).duplicate(true));
+    
+    return;
+#-------------------------------------------------------------------------------
+
+func set_pos(pos : Vector3):
+    translation = pos;
+    return;
+
+#-------------------------------------------------------------------------------
+func _process(delta):
+    translation += velocity;
+    velocity.y  -= GRAVITY_ACCEL;
+    intensity   -= attenuation;
+    
+    if (intensity < 0.0):
+        queue_free();
+    else:
+        var matl:SpatialMaterial = $MeshInstance.get_active_material(0);
+        matl.albedo_color = Color(intensity, intensity, intensity);
+"
+
+[sub_resource type="QuadMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=3]
+params_blend_mode = 1
+params_billboard_mode = 1
+albedo_texture = ExtResource( 1 )
+metallic_specular = 0.0
+
+[node name="coin_particle" type="Spatial"]
+script = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+cast_shadow = 0
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
