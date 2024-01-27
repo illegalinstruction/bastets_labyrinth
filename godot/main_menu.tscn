@@ -1,32 +1,104 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://font/HannariMincho-Regular.otf" type="DynamicFontData" id=1]
 [ext_resource path="res://main_menu/header.png" type="Texture" id=2]
 [ext_resource path="res://main_menu/cursor.png" type="Texture" id=3]
+[ext_resource path="res://main_menu/switch30.wav" type="AudioStream" id=4]
+[ext_resource path="res://main_menu/FX02.wav" type="AudioStream" id=5]
 
 [sub_resource type="GDScript" id=4]
 script/source = "extends Node2D
 
-var fade_in_clock : int = 32;
+#-------------------------------------------------------------------------------
 
-var cursor_index : int = 0;
+const CURSOR_START_X    : int = 640;
+const CURSOR_START_Y    : int = 350;
+const NUM_MENU_ITEMS    : int = 4;
 
-# Called when the node enters the scene tree for the first time.
+var fade_step_amount    : float = 0.0;
+var fade_in_clock       : int = GLOBAL.FADE_STEPS;
+var fade_out_clock      : int = 0;
+var cursor_index        : int = 0;
+var fading_out          : bool = false;
+var menu_item_height    : int = -1;
+
+#-------------------------------------------------------------------------------
+
 func _ready():
     set_process(true);
-    fade_in_clock = 32;
-    pass # Replace with function body.
+    fade_in_clock       = GLOBAL.FADE_STEPS;
+    fade_out_clock      = 0;
+    fading_out          = false;
+    fade_step_amount    = 255.0 / GLOBAL.FADE_STEPS;
+    menu_item_height    = $menu_text.get_content_height() / $menu_text.get_line_count();
+ 
+    # menu cursor positioning   
+    $cursor.position.x = CURSOR_START_X;
+    $cursor.position.y = CURSOR_START_Y;
+    cursor_index = 0;
+    
+    return;
 
-#----------------------------------------------
+#-------------------------------------------------------------------------------
 
 func _process(delta):
-    if (fade_in_clock > 0):
-        fade_in_clock -= 1;
-        $fade_helper.color.a8 = (fade_in_clock * 8);
+    # make sound effects obey the global volume
+    $snd_menu_move.volume_db        = GLOBAL.get_sfx_vol_in_db();
+    $snd_menu_accept.volume_db      = GLOBAL.get_sfx_vol_in_db();
+      
+    if ((fade_in_clock > 0) or (fading_out)):
+        if (fading_out):
+            $fade_helper.show();
+            
+            # user chose something, menu's about to be hidden
+            if (fade_out_clock < GLOBAL.FADE_STEPS):
+                fade_out_clock += 1;
+                $fade_helper.color.a8 = (fade_out_clock * fade_step_amount);
+                
+            # done fading?
+            if (fade_out_clock == GLOBAL.FADE_STEPS):
+                match (cursor_index):
+                    0: 
+                        # get_tree().change_scene(\"res://gameplay.tscn\");
+                        get_tree().quit();
+                    1:
+                        # get_tree().change_scene(\"res://continue.tscn\");
+                        get_tree().quit();
+                    2:
+                        # get_tree().change_scene(\"res://options.tscn\");
+                        get_tree().quit();
+                    3:
+                        get_tree().quit();
+        else:
+            # fade in gracefully when showing the menu for the first time  
+            fade_in_clock -= 1;
+            $fade_helper.color.a8 = (fade_in_clock * fade_step_amount);
         
-        if (fade_in_clock == 0):
-            $fade_helper.hide();
+            if (fade_in_clock == 0):
+                $fade_helper.hide();
+    else:
+        # don't accept input until fade in's done
         
+        # key/joy handling
+        if (GLOBAL._menu_down == GLOBAL.BUTTON_STATE.PRESSED):
+            cursor_index += 1;
+            $snd_menu_move.play();
+            
+        if (GLOBAL._menu_up == GLOBAL.BUTTON_STATE.PRESSED):
+            cursor_index -= 1;
+            $snd_menu_move.play();
+
+        if (GLOBAL._menu_accept == GLOBAL.BUTTON_STATE.PRESSED):
+            $snd_menu_accept.play();
+            fading_out = true;
+            
+        if (cursor_index < 0):
+            cursor_index = NUM_MENU_ITEMS - 1;
+        if (cursor_index > (NUM_MENU_ITEMS - 1)):
+            cursor_index = 0;
+        
+        # update cursor on screen
+        $cursor.position.y = (cursor_index * menu_item_height) + CURSOR_START_Y;
     
     return;
 "
@@ -91,15 +163,19 @@ bbcode_enabled = true
 bbcode_text = "[center]New Game
 Load Game
 Options
-Credits
 Quit[/center]"
 text = "New Game
 Load Game
 Options
-Credits
 Quit"
 
 [node name="fade_helper" type="ColorRect" parent="."]
 margin_right = 1280.0
 margin_bottom = 720.0
 color = Color( 0, 0, 0, 1 )
+
+[node name="snd_menu_move" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+
+[node name="snd_menu_accept" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
