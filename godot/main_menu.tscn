@@ -59,8 +59,7 @@ func _process(delta):
             if (fade_out_clock == GLOBAL.FADE_STEPS):
                 match (cursor_index):
                     0: 
-                        # get_tree().change_scene(\"res://gameplay.tscn\");
-                        get_tree().quit();
+                        get_tree().change_scene(\"res://gameplay_root.tscn\");
                     1:
                         # get_tree().change_scene(\"res://continue.tscn\");
                         get_tree().quit();
