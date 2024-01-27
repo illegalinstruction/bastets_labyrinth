@@ -1,6 +1,9 @@
 Here's a list of the 3rd-party assets used and where they came from:
 
-Menu sounds:
+Menu move sound:
     https://opengameart.org/content/51-ui-sound-effects-buttons-switches-and-clicks
-    Created by Kenney (https://www.kenney.nl)
-
+    Created by Kenney Vleugels (https://www.kenney.nl)
+Menu accept sound:
+    https://opengameart.org/content/level-up-power-up-coin-get-13-sounds
+    Created by wobbleboxx (wobblebox.com)
+    (some filtering and post-processing was done)
