@@ -12,9 +12,23 @@
 #  |___/                                .';coxOKKX0xc.                .        
 #           +                             .':ccc;..      .               
 #                     .
-#   
+# 
 #
-# copyright notice & license go here                                  
+#   A bullet-hell roguelike rom-com no one asked for.
+#   Copyright (C) 2024  illegal_instruction
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version. 
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
 
@@ -25,6 +39,7 @@ const RES_SCALE_MIN : float = .5;
 const RES_SCALE_MAX : float = 1.0;
 const DEBUG_MODE : bool = true;
 const ANALOGUE_DEAD_ZONE : float = 0.25;
+const FADE_STEPS : int = 40;
 
 #---- MAIN MENU and DATA VARS --------------------------------------------------
 const game_data_base : String = "user://bastet";
@@ -310,7 +325,7 @@ func poll_joystick():
         _left_stick_distance = left_tmp.normalized().length();
         _left_stick_angle = left_tmp.angle();
         
-                #--- BUTTONS ----------------------------------
+        #--- BUTTONS ----------------------------------
         #----------
         
         if (Input.is_key_pressed(KEY_H)):
@@ -351,16 +366,12 @@ func poll_joystick():
             _button_start = int(clamp(_button_start,0,2.0));
         else:
             _button_start = BUTTON_STATE.IDLE;
-
         
         #----------
 
-        
-        # not used in this game
-        #_right_stick_x = Input.get_joy_axis(0,JOY_ANALOG_RX);
-        #_right_stick_y = Input.get_joy_axis(0,JOY_ANALOG_RY);
+        _right_stick_x = Input.get_joy_axis(0,JOY_ANALOG_RX);
+        _right_stick_y = Input.get_joy_axis(0,JOY_ANALOG_RY);
     return;
-        
 
 #==============================================================================
 # UI FONT
