@@ -1,8 +1,49 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://main_menu/cursor.png" type="Texture" id=1]
 [ext_resource path="res://main_menu/switch30.wav" type="AudioStream" id=2]
 [ext_resource path="res://main_menu/FX02.wav" type="AudioStream" id=3]
+[ext_resource path="res://misc/menu_font.tres" type="DynamicFont" id=4]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node2D
+
+#-------------------------------------------------------------------------------
+
+const CURSOR_START_X    : int = 640;
+const CURSOR_START_Y    : int = 320;
+const NUM_MENU_ITEMS    : int = 5;
+
+var fade_step_amount    : float = 0.0;
+var fade_in_clock       : int = GLOBAL.FADE_STEPS;
+var fade_out_clock      : int = 0;
+var cursor_index        : int = 0;
+var fading_out          : bool = false;
+var menu_item_height    : int = -1;
+
+#-------------------------------------------------------------------------------
+
+func _ready():
+    set_process(true);
+    fade_in_clock       = GLOBAL.FADE_STEPS;
+    fade_out_clock      = 0;
+    fading_out          = false;
+    fade_step_amount    = 255.0 / GLOBAL.FADE_STEPS;
+    menu_item_height    = $menu_text.get_content_height() / $menu_text.get_line_count();
+ 
+    # menu cursor positioning   
+    $cursor.position.x = CURSOR_START_X;
+    $cursor.position.y = CURSOR_START_Y;
+    cursor_index = 0;
+    
+    return;
+
+#-------------------------------------------------------------------------------
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#    pass
+"
 
 [sub_resource type="CanvasItemMaterial" id=1]
 blend_mode = 1
@@ -32,6 +73,27 @@ func _process(_ignore):
 "
 
 [node name="optsmenu_root" type="Node2D"]
+script = SubResource( 3 )
+
+[node name="menu_text" type="RichTextLabel" parent="."]
+anchor_top = 320.0
+anchor_right = 1280.0
+anchor_bottom = 720.0
+margin_top = 320.0
+margin_right = 1280.0
+margin_bottom = 960.0
+custom_fonts/normal_font = ExtResource( 4 )
+bbcode_enabled = true
+bbcode_text = "[center]Sounds Volume: XX
+Music Volume: XX
+Input: Keyboard
+Windowed
+Back To Main Menu[/center]"
+text = "Sounds Volume: XX
+Music Volume: XX
+Input: Keyboard
+Windowed
+Back To Main Menu"
 
 [node name="snd_menu_move" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 2 )
@@ -42,7 +104,7 @@ stream = ExtResource( 3 )
 [node name="cursor" type="Sprite" parent="."]
 material = SubResource( 1 )
 position = Vector2( 640, 350 )
-scale = Vector2( 20.3125, 3 )
+scale = Vector2( 32, 3 )
 texture = ExtResource( 1 )
 script = SubResource( 2 )
 
