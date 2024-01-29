@@ -64,7 +64,7 @@ func _process(delta):
                         # get_tree().change_scene(\"res://continue.tscn\");
                         get_tree().quit();
                     2:
-                        # get_tree().change_scene(\"res://options.tscn\");
+                        get_tree().change_scene(\"res://opts_menu.tscn\");
                         get_tree().quit();
                     3:
                         get_tree().quit();
