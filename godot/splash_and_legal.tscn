@@ -102,6 +102,7 @@ var anim_clock : int;
 
 func _ready():
     GLOBAL.load_options_data();
+    OS.window_fullscreen = GLOBAL.fullscreen;
     $AudioStreamPlayer.volume_db = GLOBAL.get_sfx_vol_in_db();
     anim_clock = -150;
     $AudioStreamPlayer.play();
