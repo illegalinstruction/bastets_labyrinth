@@ -2,7 +2,7 @@
 A bullet-hell dungeon crawler whose elevator pitch is succinctly expressed thus:
 > _"Good: a catgirl goddess wants to marry you! Bad: her parents want to make sure you're worthy of her first..."_
 
-Made wtih Godot 3.6.
+Made wtih Godot 3.5 (or 3.6 once it's out of beta).
 
 ## Flow of play
 1. The player has crazy dreams in which they're transported to ancient Egypt.
@@ -42,4 +42,4 @@ Made wtih Godot 3.6.
 - gold coin - increments a counter when touched, can be used in the hub to buy permanent stat boosts.
 
 ## See also
-- [THis thread](https://shmups.system11.org/viewtopic.php?t=44816)
+- [This thread](https://shmups.system11.org/viewtopic.php?t=44816)
