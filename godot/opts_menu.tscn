@@ -11,7 +11,7 @@ script/source = "extends Node2D
 #-------------------------------------------------------------------------------
 
 const CURSOR_START_X    : int = 640;
-const CURSOR_START_Y    : int = 320;
+const CURSOR_START_Y    : int = 350;
 const NUM_MENU_ITEMS    : int = 5;
 
 var fade_step_amount    : float = 0.0;
@@ -21,10 +21,45 @@ var cursor_index        : int = 0;
 var fading_out          : bool = false;
 var menu_item_height    : int = -1;
 
+var editing_sfxvol      : bool = false;
+var editing_bgmvol      : bool = false;
+#-------------------------------------------------------------------------------
+
+func update_menu_text():
+    $menu_text.bbcode_text = \"[center]\";
+    if (editing_sfxvol): 
+        $menu_text.bbcode_text += \"[tornado radius=7 freq=4]\";
+    $menu_text.bbcode_text += \"Sounds Volume: \" + str(GLOBAL.sfx_vol) + \"\\n\";
+    if (editing_sfxvol): 
+        $menu_text.bbcode_text += \"[/tornado]\";
+
+    if (editing_bgmvol): 
+        $menu_text.bbcode_text += \"[tornado radius=7 freq=4]\";
+    $menu_text.bbcode_text += \"Music Volume: \" + str(GLOBAL.music_vol) + \"\\n\";
+    if (editing_bgmvol): 
+        $menu_text.bbcode_text += \"[/tornado]\";
+    
+    if (GLOBAL.use_joystick):
+        $menu_text.bbcode_text += \"Input: Joypad\\n\";
+    else:
+        $menu_text.bbcode_text += \"Input: Keyboard\\n\";
+
+    if (GLOBAL.fullscreen):
+        $menu_text.bbcode_text += \"Fullscreen\\n\";
+    else:
+        $menu_text.bbcode_text += \"Windowed\\n\";
+    
+    $menu_text.bbcode_text += \"Back To Main Menu[/center]\";
+    
+    return;
+
 #-------------------------------------------------------------------------------
 
 func _ready():
     set_process(true);
+    
+    GLOBAL.load_options_data();
+    
     fade_in_clock       = GLOBAL.FADE_STEPS;
     fade_out_clock      = 0;
     fading_out          = false;
@@ -35,14 +70,100 @@ func _ready():
     $cursor.position.x = CURSOR_START_X;
     $cursor.position.y = CURSOR_START_Y;
     cursor_index = 0;
-    
+
+    update_menu_text();
+
     return;
 
 #-------------------------------------------------------------------------------
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#    pass
+func _process(_unused):
+    # make sound effects obey the global volume
+    $snd_menu_move.volume_db        = GLOBAL.get_sfx_vol_in_db();
+    $snd_menu_accept.volume_db      = GLOBAL.get_sfx_vol_in_db();
+      
+    if ((fade_in_clock > 0) or (fading_out)):
+        if (fading_out):
+            $fade_helper.show();
+            
+            # user chose something, menu's about to be hidden
+            if (fade_out_clock < GLOBAL.FADE_STEPS):
+                fade_out_clock += 1;
+                $fade_helper.color.a8 = (fade_out_clock * fade_step_amount);
+                
+            # done fading?
+            if (fade_out_clock == GLOBAL.FADE_STEPS):
+                get_tree().change_scene(\"res://main_menu.tscn\");    
+        else:
+            # fade in gracefully when showing the menu for the first time  
+            fade_in_clock -= 1;
+            $fade_helper.color.a8 = (fade_in_clock * fade_step_amount);
+        
+            if (fade_in_clock == 0):
+                $fade_helper.hide();
+    else:
+        # don't accept input until fade in's done
+        
+        # key/joy handling
+        if (GLOBAL._menu_down == GLOBAL.BUTTON_STATE.PRESSED):
+            if (editing_sfxvol):
+                GLOBAL.sfx_vol -= 1;
+                GLOBAL.sfx_vol = int(clamp(GLOBAL.sfx_vol,0,8));
+                update_menu_text();
+            elif (editing_bgmvol):
+                GLOBAL.music_vol -= 1;
+                GLOBAL.music_vol = int(clamp(GLOBAL.music_vol,0,8));
+                update_menu_text();
+            else:
+                cursor_index += 1;
+            $snd_menu_move.play();
+            
+        if (GLOBAL._menu_up == GLOBAL.BUTTON_STATE.PRESSED):
+            if (editing_sfxvol):
+                GLOBAL.sfx_vol += 1;
+                GLOBAL.sfx_vol = int(clamp(GLOBAL.sfx_vol,0,8));
+                update_menu_text();
+            elif (editing_bgmvol):
+                GLOBAL.music_vol += 1;
+                GLOBAL.music_vol = int(clamp(GLOBAL.music_vol,0,8));
+                update_menu_text();
+            else:
+                cursor_index -= 1;
+            $snd_menu_move.play();
+            
+
+        if (GLOBAL._menu_accept == GLOBAL.BUTTON_STATE.PRESSED):
+            $snd_menu_accept.play();
+            match (cursor_index):
+                0:
+                    print_debug(\"sfx volume\");
+                    editing_sfxvol = not editing_sfxvol;
+                1:
+                    print_debug(\"bgm volume\");
+                    editing_bgmvol = not editing_bgmvol;
+                2:
+                    print_debug(\"input\");
+                    GLOBAL.use_joystick = not GLOBAL.use_joystick;
+                3:
+                    print_debug(\"window/fullscreen\");
+                    GLOBAL.fullscreen = not GLOBAL.fullscreen;
+                    OS.window_fullscreen = GLOBAL.fullscreen;
+                4:
+                    print_debug(\"back\");
+                    GLOBAL.save_options_data();
+                    fading_out = true;
+                    
+            update_menu_text();
+                    
+        if (cursor_index < 0):
+            cursor_index = NUM_MENU_ITEMS - 1;
+        if (cursor_index > (NUM_MENU_ITEMS - 1)):
+            cursor_index = 0;
+        
+        # update cursor on screen
+        $cursor.position.y = (cursor_index * menu_item_height) + CURSOR_START_Y;
+
+    return;
 "
 
 [sub_resource type="CanvasItemMaterial" id=1]
