@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://gameplay/protagonist.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gameplay/test_room/test_room.tscn" type="PackedScene" id=2]
 [ext_resource path="res://gameplay/test_enemy.tscn" type="PackedScene" id=3]
+[ext_resource path="res://gameplay_root.gd" type="Script" id=4]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Spatial
@@ -27,6 +28,7 @@ func _process(delta):
 "
 
 [node name="gameplay_root" type="Node2D"]
+script = ExtResource( 4 )
 
 [node name="ViewportContainer" type="ViewportContainer" parent="."]
 margin_right = 40.0
