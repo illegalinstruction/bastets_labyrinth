@@ -9,6 +9,7 @@ var paused : bool = false;
 func _ready():
     paused = false;
     set_process(true);
+    GLOBAL.set_bgm(0);
     return;
 
 #------------------------------------------------------------------------------
