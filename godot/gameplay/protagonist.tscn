@@ -39,20 +39,30 @@ func _ready():
 
 func _process(_ignore):
     # movement
-    if (GLOBAL._left_stick_distance > 0.4):
-        self.rotation.y = (GLOBAL._left_stick_angle);
-        if (GLOBAL._left_stick_distance > 0.7):
+    if (GLOBAL.use_joystick):
+        if (GLOBAL._left_stick_distance > 0.4):
+            self.rotation.y = (GLOBAL._left_stick_angle);
+            if (GLOBAL._left_stick_distance > 0.7):
+                $chara_model/AnimationPlayer.play(\"run\");
+                velocity.x = sin(self.rotation.y) / 7.0;
+                velocity.z = cos(self.rotation.y) / 7.0;
+            else:
+                $chara_model/AnimationPlayer.play(\"walk\");
+                velocity.x = sin(self.rotation.y) / 12.0;
+                velocity.z = cos(self.rotation.y) / 12.0;
+        else:
+            $chara_model/AnimationPlayer.play(\"idle\");
+            velocity *= 0.5;
+    else:
+        if (GLOBAL._left_stick_distance > 0.4):
+            self.rotation.y = (GLOBAL._left_stick_angle);
             $chara_model/AnimationPlayer.play(\"run\");
             velocity.x = sin(self.rotation.y) / 7.0;
             velocity.z = cos(self.rotation.y) / 7.0;
         else:
-            $chara_model/AnimationPlayer.play(\"walk\");
-            velocity.x = sin(self.rotation.y) / 12.0;
-            velocity.z = cos(self.rotation.y) / 12.0;
-    else:
-        $chara_model/AnimationPlayer.play(\"idle\");
-        velocity *= 0.5;
-        
+            $chara_model/AnimationPlayer.play(\"idle\");
+            velocity *= 0.5;
+            
     if (velocity.x > 0.4):
         velocity.x = 0.4;
     if (velocity.x < -0.4):
