@@ -323,7 +323,7 @@ func poll_joystick():
         _left_stick_y = left_tmp.y;
         
         _left_stick_distance = left_tmp.normalized().length();
-        _left_stick_angle = left_tmp.angle();
+        _left_stick_angle    = (PI/2.0) - left_tmp.angle();
         
         #--- BUTTONS ----------------------------------
         #----------
